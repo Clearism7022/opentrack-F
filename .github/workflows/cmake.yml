@@ -80,12 +80,14 @@ jobs:
     - name: Configure
       run: ${{matrix.cmake}} -GNinja -S ${{github.workspace}}/ -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DQt6_DIR="${{env.QT_ROOT_DIR}}/lib/cmake/Qt6" -DONNXRuntime_DIR=/usr/lib/cmake/onnxruntime
 
+    
     - name: Build
       run: ${{matrix.cmake}} --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target install
 
-    - name: Upload build
-      uses: actions/upload-artifact@v3
+    - name: Upload Windows build
+      if: matrix.os == 'windows-latest'
+      uses: actions/upload-artifact@v4
       with:
-        name: buildoutput
-        path: ${{github.workspace}}/build/
-
+        name: opentrack-xreal-windows
+        path: build/
+        if-no-files-found: error
